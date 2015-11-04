@@ -1,5 +1,7 @@
 # StockDownloader
-A program that downloads and displays stocks from finance.yahoo.com. It also can update downloaded data.
+Данная программа скачивает с finance.yahoo.com котировки акций и отображает их график. Также возможно обновлять загруженные данные. 
+
+This program that downloads and displays stock quotes from finance.yahoo.com. It also can update downloaded data.
 
 ![stocksgui](https://cloud.githubusercontent.com/assets/13558216/10944297/fc3830ae-8331-11e5-92b5-d30793b6348c.JPG)
 

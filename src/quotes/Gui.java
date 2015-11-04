@@ -279,7 +279,7 @@ public class Gui {
             html.setText("<html><br>"+
                     "&nbsp; StockDownloader_1.0 <br><br>"+
                     "&nbsp; Contacts: <br><br>"+
-                    "&nbsp; <a href=\"https://github.com/SteshenkoMA\">github.com/SteshenkoMA</a> <br><br>"+
+                    "&nbsp; <a href=\"https://github.com/SteshenkoMA\">github.com/Stry</a> <br><br>"+
                     "</html>");
             html.setBackground(new JFrame().getBackground());
             html.setEditable(false);

@@ -1,5 +1,5 @@
 # StockDownloader
-Данная программа скачивает с finance.yahoo.com котировки акций и отображает их график. Также возможно обновлять загруженные данные. Присутствует всплывающее окно с автозаполнением. 
+Данная программа скачивает с finance.yahoo.com котировки акций и отображает их график. Также возможно обновлять загруженные данные. Присутствует всплывающее окно с автозаполнением. Более подробную информацию вы можете прочитать здесь: http://www.long-short.ru/post/kachalka-dannyh-dlya-financeyahoocom-903
 
 Используемые библиотеки:  
 1) jfreecharts – для отображения графиков  
@@ -7,7 +7,7 @@
 
 
 This program downloads and displays stock quotes from finance.yahoo.com. It also can update downloaded data.
-There is a pop-up window with auto-complete. 
+There is a pop-up window with auto-complete. For more information you can read here (Russian only): http://www.long-short.ru/post/kachalka-dannyh-dlya-financeyahoocom-903
 
 Used libraries:  
 1) jfreecharts to display graphs  

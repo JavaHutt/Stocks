@@ -12,12 +12,21 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-// Данный класс переходит на http://ichart.finance.yahoo.com, выбирает нужную котировку, считывает ее исторические данные
-// и заносит их в Map bars, а также возвращает в формате OHLCDataset, который испольует библиотека jfreecharts
+/*
+   Данный класс переходит на http://ichart.finance.yahoo.com, выбирает нужную котировку, считывает ее исторические данные
+   и заносит их в Map bars, а также возвращает в формате OHLCDataset, который испольует библиотека jfreecharts
+
+   This class goes to http://ichart.finance.yahoo.com selects the desired quote, reads the historical data
+   and puts it in bars Map, returns OHLCDataset format that jfreecharts library uses
+*/
 
 public class QuotesParser {
 
-    // Создаем класс Quote, в котором обьявляем переменные и создаем конструктор
+    /* 
+       Создаем класс Quote, в котором обьявляем переменные и создаем конструктор
+    
+       Create a Quote class, in which we declare variables and create the constructor
+    */
 
     public static class Quote {
         public final Date date;
@@ -46,24 +55,44 @@ public class QuotesParser {
     }
     public final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 
-    // Создаем коллекцию bars класса TreeMap, в которую будут добавляться объекты класса Quote и сортироваться  по ключу (по дате, которую считаем с потока данных)
-    // К ней будем обращатья из классов FileParserUpdate и QuotesDonwloader
+    /*
+       Создаем коллекцию bars класса TreeMap, в которую будут добавляться объекты класса Quote и сортироваться  по ключу (по дате, которую считаем с потока данных)
+       К ней будем обращатьcя из классов FileParserUpdate и QuotesDonwloader
+    
+       Create a collection class TreeMap bars, in which objects of the class Quote will be added and sorted by the key (by date, which we read from the data stream)
+       We will access to it from classes FileParserUpdate and QuotesDonwloader
+    */
     
     public static Map<Date, Quote> bars = new TreeMap<>();
     
-    // makeQuoteArray - этот метод считывает данные тикера с заданного url
+    /* 
+       makeQuoteArray - этот метод считывает данные тикера с заданного url
+    
+       makeQuoteArray - this method reads the data of the Ticker from the given url
+    */
 
     public static OHLCDataset makeQuoteArray (String symbol, GregorianCalendar start, GregorianCalendar end) {
              
         List<OHLCDataItem> dataItems = new ArrayList<OHLCDataItem>();
         try {
             
-            // Для начала очистим нашу коллекцию bars, это сделано для того, чтобы
-            // в ней не оставались значения от предыдущих вызовов этого метода
+            /* 
+               Для начала очистим нашу коллекцию bars, это сделано для того, чтобы
+               в ней не оставались значения от предыдущих вызовов этого метода
+                  
+               First we need to clear our collection of bars, this is done in order
+               it was left with the values from previous calls to this method
+            */       
+            
+           
             
             bars.clear();
                                
-            // Задаем нужный url адресс
+            /*
+               Задаем нужный url адрес
+            
+               Set the desired url
+            */
 
             String strUrl = "http://ichart.finance.yahoo.com/table.csv?s=" + symbol +
                     "&a=" + start.get(Calendar.MONTH) +
@@ -77,8 +106,12 @@ public class QuotesParser {
             BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
             DateFormat df = new SimpleDateFormat("y-M-d");
 
-            // Считываем построчно csv, заданный в url. Нужные нам данные разделены зяпятой
-
+            /* 
+               Считываем построчно csv, заданный в url. Нужные нам данные разделены зяпятой
+            
+               Read csv line by line, specified in the url. Date we need is separated by a comma
+            */
+            
             String inputLine;
             in.readLine();
             while ((inputLine = in.readLine()) != null) {
@@ -98,10 +131,16 @@ public class QuotesParser {
                 high = high * adjClose / close;
                 low = low * adjClose / close;
 
-                // Создаем объект item класса OHLCDataItem, состоящий из считанных из строки данных
-                // Добавляем item в ArrayList dataItems
-                // Эта процедура повторяется, пока не считаются все необходимые нам строки
-
+                /*
+                   Создаем объект item класса OHLCDataItem, состоящий из считанных из строки данных
+                   Добавляем item в ArrayList dataItems
+                   Эта процедура повторяется, пока не считаются все необходимые нам строки
+                
+                   Create an object of class OHLCDataItem, consisting of a few rows of data
+                   Add item to ArrayList dataItems
+                   This procedure is repeated until we read all needed rows
+                */ 
+                
                 OHLCDataItem item = new OHLCDataItem(date, open, high, low, adjClose, volume);
                 dataItems.add(item);
 
@@ -113,33 +152,47 @@ public class QuotesParser {
         }
         
 
-        // Сортируем dataItems в обратном порядке
-        // Конвентируем ArrayList dataItems в массив data
-        // Создаем dataset, данные которого используются для построения графика
-
+        /* 
+           Сортируем dataItems в обратном порядке
+           Конвенртируем ArrayList dataItems в массив data
+           Создаем dataset, данные которого используются для построения графика
+        
+           Sort DataItems in reverse order
+           Convert ArrayList dataItems in the data array
+           Create dataset, whose data is used for graphing
+        */
+        
         Collections.reverse(dataItems);
         OHLCDataItem[] data = dataItems.toArray(new OHLCDataItem[dataItems.size()]);
         OHLCDataset dataset = new DefaultOHLCDataset(symbol, data);
-
 
         return dataset;
 
 
     }
 
-    // makeQuoteArrayOffline - этот метод считывает данные тикера из папки downloads
+    /* 
+       makeQuoteArrayOffline - этот метод считывает данные тикера из папки downloads
     
+       makeQuoteArrayOffline - this method reads the data of the Ticker from the downloads folder
+    */
     public static OHLCDataset makeQuoteArrayOffline (String symbol) {
 
         List<OHLCDataItem> dataItems = new ArrayList<OHLCDataItem>();
         try {
 
-            // Задаем нужный url адресс
-
+            /* 
+               Задаем нужный url адрес
+            
+               Set the desired url
+            */
             BufferedReader in = new BufferedReader(new FileReader("downloads/"+symbol+".txt"));
             DateFormat df = new SimpleDateFormat("yyyyMMdd");
 
-            // Считываем построчно csv, заданный в url. Нужные нам данные разделены зяпятой
+            /*
+               Считываем построчно csv, заданный в url. Нужные нам данные разделены зяпятой
+               Read csv line by line, specified in the url. The data we need is separated by a comma
+            */
 
             String inputLine;
          
@@ -154,16 +207,20 @@ public class QuotesParser {
                 double volume = Double.parseDouble(st.nextToken());
                 double adjClose = Double.parseDouble(st.nextToken());
 
-                
-
                 open = open * adjClose / close;
                 high = high * adjClose / close;
                 low = low * adjClose / close;
 
-                // Создаем объект item класса OHLCDataItem, состоящий из считанных из строки данных
-                // Добавляем item в ArrayList dataItems
-                // Эта процедура повторяется, пока не считаются все необходимые нам строки
-
+                /*
+                   Создаем объект item класса OHLCDataItem, состоящий из считанных из строки данных
+                   Добавляем item в ArrayList dataItems
+                   Эта процедура повторяется, пока не считаются все необходимые нам строки
+                
+                   Create an object of class OHLCDataItem, consisting of a few rows of data
+                   Add item to ArrayList dataItems
+                   This procedure is repeated until we read all needed rows
+                */
+                
                 OHLCDataItem item = new OHLCDataItem(date, open, high, low, adjClose, volume);
                 dataItems.add(item);
 
@@ -175,9 +232,15 @@ public class QuotesParser {
             
         }
 
-        // Сортируем dataItems в обратном порядке
-        // Конвентируем ArrayList dataItems в массив data
-        // Создаем dataset, данные которого используются для построения графика
+        /* 
+           Сортируем dataItems в обратном порядке
+           Конвенртируем ArrayList dataItems в массив data
+           Создаем dataset, данные которого используются для построения графика
+        
+           Sort DataItems in reverse order
+           Convert ArrayList dataItems in the data array
+           Create dataset, whose data is used for graphing
+        */
 
         Collections.reverse(dataItems);
         OHLCDataItem[] data = dataItems.toArray(new OHLCDataItem[dataItems.size()]);

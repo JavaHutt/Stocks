@@ -10,15 +10,24 @@ import java.net.URISyntaxException;
 import java.util.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 
-// Данный класс отвечает за создание графического интерфейса программы
+/* 
+   Данный класс отвечает за создание графического интерфейса программы
+
+   This class is responsible for creating the graphical interface
+*/
 
 
 public class Gui {
 
-    // Переменные, возвращающие сегодняшнюю дату (день, месяц, год)
+    /*
+       Переменные, возвращающие сегодняшнюю дату (день, месяц, год)
+    
+       Variables that returns today's date (day, month, year)
+    */
 
     public static int getCurrentDay()
     {
@@ -39,11 +48,18 @@ public class Gui {
         return calendar.get(java.util.Calendar.YEAR);
     }
 
-    // Метод создающий форму, поля, кнопки, таблицу
+    /* 
+       Метод создающий форму, поля, кнопки, таблицу
     
+       Method that creates the form, field, button, table
+    */
     public static void build() {
 
-        // Создаем массивы, используемые для выбора начальной и конечной дат
+        /* 
+           Создаем массивы, используемые для выбора начальной и конечной дат
+        
+           Create arrays that are used to select the start date and end date
+        */
 
         ArrayList <String> daysList = new ArrayList<String>();
         for (int a = 1; a <=31;a++){
@@ -65,7 +81,11 @@ public class Gui {
         Collections.reverse(yearsList);
         String[] years2 = yearsList.toArray(new  String [yearsList.size()]);
 
-        // Создаем элементы интерфейса
+        /* 
+           Создаем элементы интерфейса
+        
+           Create interface elements
+        */
         
         JComboBox dayFrom = new JComboBox(days);
         dayFrom.setEditable(true);
@@ -140,11 +160,16 @@ public class Gui {
         model.addColumn("Ticker");  
         model.addColumn("Date from");  
         model.addColumn("Date to");   
+        
+        
       
         JTable table = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBounds(35, 150, 482, 300);
         table.setEnabled(false);
+        
+
+
         
         JPopupMenu popup = new JPopupMenu();
         JMenuItem menuItemShow = new JMenuItem("Show");
@@ -157,7 +182,11 @@ public class Gui {
         table.setComponentPopupMenu(popup);
         table.addMouseListener(new TableMouseListener(table));
         
-        // Цепляем элементы на панель
+        /*
+           Цепляем элементы на панель
+        
+           Put elements on the panel
+        */ 
 
         JPanel panel = new JPanel();
         panel.setLayout(null);
@@ -176,14 +205,25 @@ public class Gui {
         panel.add(button5);
         panel.add(button6);
         
-        // Создаем две переменные, которые будут хранить выбранные даты
-
+        /* 
+          Создаем две переменные, которые будут хранить выбранные даты
+        
+          Create two variables that will store the selected date
+        */
         GregorianCalendar start = new GregorianCalendar(Integer.parseInt((String) yearFrom.getSelectedItem()), Integer.parseInt((String) monthFrom.getSelectedItem())-1, Integer.parseInt((String) dayFrom.getSelectedItem()));
         GregorianCalendar end = new GregorianCalendar(Integer.parseInt((String) yearTo.getSelectedItem()), Integer.parseInt((String) monthTo.getSelectedItem())-1, Integer.parseInt((String) dayTo.getSelectedItem()));
 
-        // Методы отвечающие за функциональность элементов формы
+        /*
+           Методы отвечающие за функциональность элементов формы
         
-        // Устанавливаем возможность выбора даты, добавляем соответсвующие Listeners
+           Methods responsible for the functionality of form elements
+        */
+        
+        /*
+           Устанавливаем возможность выбора даты, добавляем соответствующие Listeners
+        
+           Set option of date choosing, add appropriate Listeners
+        */
 
         yearFrom.addActionListener(new ActionListener() {
             @Override
@@ -227,9 +267,13 @@ public class Gui {
             }
         });
 
-        // Кнопка Show - Передает методу QuoteViewer.showChart тикер и выбранную дату
-        // Далее появляется сам график ценной бумаги
+        /* 
+           Кнопка Show - Передает методу QuoteViewer.showChart тикер и выбранную дату
+           Далее появляется сам график ценной бумаги
         
+           Show button - Sends the method QuoteViewer.showChart Ticker and selected date
+//         Then stock chart shows
+        */
         button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -237,7 +281,11 @@ public class Gui {
             }
         });
 
-        // Кнопка File - Вызывает окно со справочной информацией
+        /* 
+           Кнопка File - Вызывает окно со справочной информацией
+        
+           The File button - Opens a window with help information
+        */
         
         helpItem.addActionListener(new ActionListener() {
             @Override
@@ -314,8 +362,13 @@ public class Gui {
         
         
         
-        // Кнопка Download - Передает методу QuotesDownloader.writeInFile тикер, дату
-        // Далее этот метод скачивает данные в txt файл в папку downloads
+        /* 
+           Кнопка Download - Передает методу QuotesDownloader.writeInFile тикер, дату
+           Далее этот метод скачивает данные в txt файл в папку downloads
+        
+           Button Download - QuotesDownloader Passes to the method.writeInFile Ticker, date
+           This method downloads the data in txt file in the downloads folder
+        */
         
         button5.addActionListener(new ActionListener() {
             @Override
@@ -328,10 +381,17 @@ public class Gui {
             }
         });
         
-        // Ниже представлены Listeners отвечающие за функционал всплывающего меню при нажатии правой ннопкой мыши на строке таблицы
-        // menuItemShow - вызвать график; 
-        // menuItemRemove - удалить "выбранный_тикер".txt из папки downloads
-        // menuItemUpdate - обновить исторические данные выбранного тикера
+        /* 
+           Ниже представлены Listeners отвечающие за функционал всплывающего меню при нажатии правой кнопкой мыши на строке таблицы
+           menuItemShow - вызвать график; 
+           menuItemRemove - удалить "выбранный_тикер".txt из папки downloads
+           menuItemUpdate - обновить исторические данные выбранного тикера
+        
+           Below Listeners are responsible for the functionality of the pop-up menu when you right-click on a table row
+           menuItemShow - call chart; 
+           menuItemRemove - remove "chosen_ticker".txt from folder downloads
+           menuItemUpdate - update historical data of selected Ticker
+        */
         
         menuItemShow.addActionListener(new ActionListener() {
             @Override
@@ -380,8 +440,12 @@ public class Gui {
             }
         });
         
-        // Создаем основное окно программы
-
+        /*
+           Создаем основное окно программы
+        
+           Create the main window
+        */
+        
         JFrame MainWindow = new JFrame("Stock Downloader");
         
         MainWindow.setJMenuBar(menuBar);
@@ -392,12 +456,21 @@ public class Gui {
         MainWindow.setLocationRelativeTo(null);
         MainWindow.setVisible(true);
         
-        // Когда окно создано, добавляем тикеры, которые находятся в папке downloads в таблицу
-        // Для этого:
-        // 1) считываем содержимое папки 
-        // 2) убираем из названия файла ".txt"
-        // 3) вызываем методы, которые считывают даты начала и конца содержмиого файла
-        // 4) добавляем данные в таблицу (Название тикера, дата начала, дата конца)
+        /*
+           Когда окно создано, добавляем тикеры, которые находятся в папке downloads в таблицу
+           Для этого:
+           1) считываем содержимое папки 
+           2) убираем из названия файла ".txt"
+           3) вызываем методы, которые считывают даты начала и конца содержмиого файла
+           4) добавляем данные в таблицу (Название тикера, дата начала, дата конца)
+        
+           When the window is created, add the tickers that are in the downloads folder into a table
+           To do this:
+           1) read contents of folder 
+           2) remove from file name ".txt"
+           3) call methods that read the start date and the end of the content file
+           4) add data to the table (the Name of the Ticker, start date, end date)
+        */
         
         File dir = new File("downloads/");
         File []fList;
@@ -415,8 +488,11 @@ public class Gui {
          }
         }
 
-        // Кнопка UpdateAll - отвечает за обновление всех тикеров из папки downloads
+        /*
+           Кнопка UpdateAll - отвечает за обновление всех тикеров из папки downloads
         
+           Button UpdateAll - responsible for updating all tickers from the downloads folder
+        */
         button6.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -424,9 +500,15 @@ public class Gui {
                 File []fList;
                 fList = dir.listFiles();
                 
-                // Проходим циклом по директории downloads
-                // Обновляем каждый тикер
-                // Обновляем данные таблицы
+                /* 
+                   Проходим циклом по директории downloads
+                   Обновляем каждый тикер
+                   Обновляем данные таблицы
+                
+                   Pass by the loop through the downloads directory 
+                   Update every Ticker
+                   Update table data
+                */
                 
                 for(int i=0; i<fList.length; i++){
                     if(fList[i].isFile()){
@@ -434,11 +516,17 @@ public class Gui {
                     String ticker = fList[i].getName().replaceAll(".txt","");
                     FileParserUpdate.download(ticker);
                      
-                    // Эта часть кода работает следующим образом.
-                    // 1) проходим циклом по всем строкам таблицы
-                    // 2) если находим в первом столбце значение соответствующее названию нашего тикера (который обновили),
-                    //    считываем конечную дату и содержимого файла и добавляем ее в соотвествующий столбец таблицы
+                    /* 
+                       Эта часть кода работает следующим образом.
+                       1) проходим циклом по всем строкам таблицы
+                       2) если находим в первом столбце значение соответствующее названию нашего тикера (который обновили),
+                          считываем конечную дату и содержимого файла и добавляем ее в соответствующий столбец таблицы
                     
+                       This part of code works as follows.
+                       1) pass by a loop over all rows in the table
+                       2) if we find in the first column the value corresponding to the name of the Ticker (which we updated),
+                          read end date and the contents of the file and add it in the appropriate column of the table
+                    */
                     for (int d = model.getRowCount() - 1; d >= 0; --d) {
                          if (model.getValueAt(d, 0).equals(ticker)) {
                          String lastLine = LineReader.readLastLine(ticker);

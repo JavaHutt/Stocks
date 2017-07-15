@@ -325,7 +325,7 @@ public class Gui {
             html.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
             html.setFont(new JLabel().getFont());
             html.setText("<html><br>"+
-                    "&nbsp; StockDownloader_1.0 <br><br>"+
+                    "&nbsp; StockDownloader_1.1 <br><br>"+
                     "&nbsp; Contacts: <br><br>"+
                     "&nbsp; <a href=\"https://github.com/SteshenkoMA\">github.com/SteshenkoMA</a> <br><br>"+
                     "</html>");

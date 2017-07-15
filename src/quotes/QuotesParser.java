@@ -1,5 +1,6 @@
 package quotes;
 
+import java.io.BufferedInputStream;
 import org.jfree.data.xy.DefaultOHLCDataset;
 import org.jfree.data.xy.OHLCDataItem;
 import org.jfree.data.xy.OHLCDataset;
@@ -8,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -73,6 +75,8 @@ public class QuotesParser {
 
     public static OHLCDataset makeQuoteArray (String symbol, GregorianCalendar start, GregorianCalendar end) {
              
+        List<String> lines = new LinkedList<String>();
+        
         List<OHLCDataItem> dataItems = new ArrayList<OHLCDataItem>();
         try {
             
@@ -83,8 +87,37 @@ public class QuotesParser {
                First we need to clear our collection of bars, this is done in order
                it was left with the values from previous calls to this method
             */       
-            
+ 
+                String crumb = GetYahooQuotes.getInstance().getCrumb(symbol);
+                if (crumb != null && !crumb.isEmpty()) {
+        //            System.out.println(String.format("Downloading data to %s", symbol));
+       //             System.out.println("Crumb: " + crumb);
+                   long s = start.getTimeInMillis() / 1000;
+                   long e = end.getTimeInMillis() / 1000;
+                   
            
+                   
+                     lines = GetYahooQuotes.getInstance().getData(symbol, s, e, crumb);
+           
+                   
+                  
+                
+                    
+ //                               BufferedReader r = new BufferedReader(
+  //      new InputStreamReader(bis));
+  //       String line = r.readLine();
+  //       System.out.println("Жоп");
+  //       System.out.println(line);
+                    
+               
+                } else {
+                    System.out.println(String.format("Error retreiving data for %s", symbol));
+                }
+            
+            
+            
+            
+            
             
             bars.clear();
                                
@@ -94,16 +127,8 @@ public class QuotesParser {
                Set the desired url
             */
 
-            String strUrl = "http://ichart.finance.yahoo.com/table.csv?s=" + symbol +
-                    "&a=" + start.get(Calendar.MONTH) +
-                    "&b=" + start.get(Calendar.DAY_OF_MONTH) +
-                    "&c=" + start.get(Calendar.YEAR) +
-                    "&d=" + end.get(Calendar.MONTH) +
-                    "&e=" + end.get(Calendar.DAY_OF_MONTH) +
-                    "&f=" + end.get(Calendar.YEAR) +
-                    "&g=d&ignore=.csv";
-            URL url = new URL(strUrl);
-            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+      
+        
             DateFormat df = new SimpleDateFormat("y-M-d");
 
             /* 
@@ -112,9 +137,12 @@ public class QuotesParser {
                Read csv line by line, specified in the url. Date we need is separated by a comma
             */
             
-            String inputLine;
-            in.readLine();
-            while ((inputLine = in.readLine()) != null) {
+           
+  
+            for (String inputLine : lines) {
+                
+               
+                
                 StringTokenizer st = new StringTokenizer(inputLine, ",");
 
                 Date date = df.parse(st.nextToken());
@@ -122,14 +150,15 @@ public class QuotesParser {
                 double high = Double.parseDouble(st.nextToken());
                 double low = Double.parseDouble(st.nextToken());
                 double close = Double.parseDouble(st.nextToken());
-                double volume = Double.parseDouble(st.nextToken());
                 double adjClose = Double.parseDouble(st.nextToken());
+                double volume = Double.parseDouble(st.nextToken());
+              
 
-                bars.put(date, new Quote(date, open, high, low, close, volume, adjClose));
+                bars.put(date, new Quote(date, open, high, low, close, adjClose, volume));
 
-                open = open * adjClose / close;
-                high = high * adjClose / close;
-                low = low * adjClose / close;
+          //     open = open * adjClose / close;
+          //     high = high * adjClose / close;
+          //     low = low * adjClose / close;
 
                 /*
                    Создаем объект item класса OHLCDataItem, состоящий из считанных из строки данных
@@ -142,11 +171,15 @@ public class QuotesParser {
                 */ 
                 
                 OHLCDataItem item = new OHLCDataItem(date, open, high, low, adjClose, volume);
+                
+            //     System.out.println(inputLine);
                 dataItems.add(item);
 
+                
+            //    System.out.println(date +" "+ open +" "+ high +" "+ low +" "+ adjClose +" "+ volume);
             }
             
-            in.close();
+            
         } catch (Exception e) {
             
         }
@@ -204,12 +237,12 @@ public class QuotesParser {
                 double high = Double.parseDouble(st.nextToken());
                 double low = Double.parseDouble(st.nextToken());
                 double close = Double.parseDouble(st.nextToken());
-                double volume = Double.parseDouble(st.nextToken());
                 double adjClose = Double.parseDouble(st.nextToken());
+                double volume = Double.parseDouble(st.nextToken());
 
-                open = open * adjClose / close;
-                high = high * adjClose / close;
-                low = low * adjClose / close;
+              //  open = open * adjClose / close;
+             //   high = high * adjClose / close;
+             //   low = low * adjClose / close;
 
                 /*
                    Создаем объект item класса OHLCDataItem, состоящий из считанных из строки данных
